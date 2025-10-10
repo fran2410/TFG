@@ -210,7 +210,7 @@ class EnronDataLoader:
 
 
 def quick_test(csv_path: str):
-    loader = EnronDataLoader(csv_path, sample_size=100)
+    loader = EnronDataLoader(csv_path, sample_size=1000)
     emails = loader.load_emails()
     
     if emails:
@@ -219,7 +219,7 @@ def quick_test(csv_path: str):
         print(f"  - Emails con body: {sum(1 for e in emails if e.body)}")
         print(f"  - Remitentes únicos: {len(set(e.from_address for e in emails))}")
         
-        loader.save_processed_emails("../data/processed/enron_sample_100.json")
+        loader.save_processed_emails("../data/processed/enron_sample_1000.json")
     
     return emails
 
