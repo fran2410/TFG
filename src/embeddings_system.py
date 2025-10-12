@@ -2,6 +2,7 @@ import chromadb
 from chromadb.config import Settings
 from sentence_transformers import SentenceTransformer
 import numpy as np
+import re
 from typing import List, Dict, Optional, Any, Tuple
 from pathlib import Path
 import json
@@ -198,22 +199,83 @@ class EmailVectorDB:
                 ids.append(doc_id)
         
         return documents, metadatas, ids
+        
+    def _is_duplicate_content(self, email_result: Dict) -> bool:
+        body = email_result.get('body', '')
+        subject = email_result.get('subject', '')
+        
+        forward_patterns = [
+            r'-{20,}\s*Forwarded by',
+            r'From:.*\nSent:.*\nTo:',
+            r'-----Original Message-----',
+        ]
+        
+        has_prefix = bool(re.match(r'^\s*(re|fw|fwd):', subject, re.IGNORECASE))
+        has_forward_pattern = any(re.search(p, body[:1000], re.IGNORECASE) for p in forward_patterns)
+        
+        return has_prefix and has_forward_pattern
     
-    def search(self, query: str, n_results: int = 10, filter_metadata: Optional[Dict] = None) -> Dict[str, Any]:
+    def _deduplicate_results(self, results: List[Dict]) -> List[Dict]:
+        unique_results = []
+        seen_subjects = {}
+        
+        for result in results:
+            if self._is_duplicate_content(result):
+                continue
+            
+            subject = result.get('subject', '')
+            norm_subject = re.sub(r'^\s*(re|fw|fwd):\s*', '', subject, flags=re.IGNORECASE).strip().lower()
+            
+            if norm_subject in seen_subjects:
+                continue
+            
+            seen_subjects[norm_subject] = True
+            unique_results.append(result)
+        
+        return unique_results
+    
+    def search(self, query: str, n_results: int = 10, 
+               filter_metadata: Optional[Dict] = None,
+               deduplicate: bool = True) -> Dict[str, Any]:
+
+        search_n = n_results * 3 if deduplicate else n_results
         
         query_embedding = self.embedder.encode_query(query)
         
         results = self.collection.query(
             query_embeddings=[query_embedding.tolist()],
-            n_results=n_results,
+            n_results=search_n,
             where=filter_metadata,
             include=["metadatas", "documents", "distances"]
         )
         
         processed_results = self._process_search_results(results, query)
         
+        if deduplicate and processed_results['results']:
+            processed_results['results'] = self._deduplicate_results(processed_results['results'])[:n_results] 
+            processed_results['total'] = len(processed_results['results'])
+        with open("../data/processed/embeddings.txt", 'w', encoding='utf-8') as f:
+            
+            for i, result in enumerate(processed_results['results']):
+                f.write(f"\n Email {i+1}:\n")
+                f.write(f"  - Email ID: {result['email_id']}\n")
+                f.write(f"  - Best distance: {result['best_distance']:.3f}\n")
+                f.write(f"  - Chunks encontrados: {len(result['chunks'])}\n")
+                f.write(f"  - Subject: {result['subject']}\n")
+                f.write(f"  - From: {result['from']}\n")
+                f.write(f"  - To: {result['to']}\n")
+                f.write(f"  - Date: {result['date']}\n")
+                if result['chunks'][0]['chunk_type'] == 'body':
+                    f.write(f"  - Body: {result['chunks'][0]['text']}\n\n")
+                elif result['chunks'][1]['chunk_type'] == 'body':
+                    f.write(f"  - Body: {result['chunks'][0]['text']}\n\n")
+                elif result['chunks'][2]['chunk_type'] == 'body':
+                    f.write(f"  - Body: {result['chunks'][0]['text']}\n\n")
+                else:
+                    f.write(f"  - Body: No disponible\n\n")
+                    
+        print("Resultados guardados en ../data/processed/embeddings.txt")
         return processed_results
-    
     def _process_search_results(self, results: Dict, query: str) -> Dict[str, Any]:
 
         if not results['ids'][0]:
@@ -301,19 +363,12 @@ def test_embeddings_and_db():
     print(f"Cargando emails desde {json_path} ({len(emails)} encontrados)")
     db.index_emails(emails)
 
-    results = db.search("bike", n_results=5)
+    results = db.search("bike", n_results=10, deduplicate=False)
     
     print(f"\n Resultados de búsqueda:")
     print(f"Query: '{results['query']}'")
     print(f"Emails encontrados: {results['total']}")
     
-    for i, result in enumerate(results['results'][:5]):
-        print(f"\n Email {i+1}:")
-        print(f"  - Email ID: {result['email_id']}")
-        print(f"  - Subject: {result['subject']}")
-        print(f"  - From: {result['from']}")
-        print(f"  - Best distance: {result['best_distance']:.3f}")
-        print(f"  - Chunks encontrados: {len(result['chunks'])}")
 
     stats = db.get_stats()
     print(f"\n Estadísticas de la DB:")
