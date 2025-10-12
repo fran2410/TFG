@@ -1,0 +1,171 @@
+
+ Email 1:
+  - Email ID: 216cf8a22a77
+  - Best distance: 17.620
+  - Chunks encontrados: 2
+  - Subject: 
+  - From: phillip.allen@enron.com
+  - To: mark@intelligencepress.com
+  - Date: 2000-08-29T16:20:00+00:00
+  - Body: Mark,
+
+ Here is a spreadsheet detailing our September Socal trades. (I did not 
+distinguish between buys vs. sells.)
+
+
+
+Phillip
+
+
+ Email 2:
+  - Email ID: f84b20e7a3cf
+  - Best distance: 20.012
+  - Chunks encontrados: 2
+  - Subject: Daily Report
+  - From: phillip.allen@enron.com
+  - To: pallen70@hotmail.com
+  - Date: 2000-08-20T17:39:00+00:00
+  - Body: Subject: Daily Report
+
+---------------------- Forwarded by Phillip K Allen/HOU/ECT on 08/20/2000 
+05:38 PM ---------------------------
+
+
+"Lucy Gonzalez" <stagecoachmama@hotmail.com> on 08/16/2000 02:44:36 PM
+To: pallen@enron.com
+cc:  
+Subject: Daily Report
+
+
+
+       Phillip,
+               The a/c I bought today for #17 cost $166.71 pd by ck#1429
+      8/16/00 at WAL-MART.Also on 8/15/00 Ralph's Appliance Centerck#1428
+      frig & stove for apt #20-B IVOICE # 000119 AMT=308.56 (STOVE=150.00
+     (frig=125.00)DEL CHRG...
+
+
+ Email 3:
+  - Email ID: 4118d1b5ea27
+  - Best distance: 20.498
+  - Chunks encontrados: 2
+  - Subject: San Juan Index
+  - From: phillip.allen@enron.com
+  - To: jeffrey.hodge@enron.com
+  - Date: 2000-09-28T12:56:00+00:00
+  - Body: for outliers. Hopefully, the trades submitted will reveal counterparty names and you will be able to determine that there was only one buyer in the 4.70's and these trades are outliers. I wanted to give you some additional points of reference to aid in establishing a reasonable index. It is Enron's belief that the trades at $4.70 and higher were above market trades that should be excluded from the calculation of index. It is our desire to have reliable and accurate indeces against which to conduct our physical and financial business. Please contact me anytime I can assist you towards this goal. Sincerely, Phillip Allen
+
+
+ Email 4:
+  - Email ID: be402d2cd306
+  - Best distance: 21.106
+  - Chunks encontrados: 2
+  - Subject: FYI
+  - From: phillip.allen@enron.com
+  - To: mike.grigsby@enron.com, frank.ermis@enron.com
+  - Date: 2000-09-01T13:08:00+00:00
+  - Body: ---------------------- Forwarded by Phillip K Allen/HOU/ECT on 09/01/2000 
+01:07 PM ---------------------------
+   
+	Enron North America Corp.
+	
+	From:  Matt Motley                           09/01/2000 08:53 AM
+	
+
+To: Phillip K Allen/HOU/ECT@ECT
+cc:  
+Subject: FYI
+
+
+--
+
+
+
+ - Ray Niles on Price Caps.pdf
+
+
+ Email 5:
+  - Email ID: 3bab9cc06f76
+  - Best distance: 22.301
+  - Chunks encontrados: 2
+  - Subject: Investment Structure
+  - From: phillip.allen@enron.com
+  - To: kholst@enron.com
+  - Date: 2000-09-26T16:28:00+00:00
+  - Body: Subject: Investment Structure
+
+---------------------- Forwarded by Phillip K Allen/HOU/ECT on 09/26/2000 
+04:28 PM ---------------------------
+
+
+"George Richards" <cbpres@austin.rr.com> on 09/26/2000 01:18:45 PM
+Please respond to <cbpres@austin.rr.com>
+To: "Phillip Allen" <pallen@enron.com>
+cc: "Larry Lewter" <retwell@mail.sanmarcos.net>, "Claudia L. Crocker" 
+<clclegal2@aol.com> 
+Subject: Investment Structure
+
+
+STRUCTURE:
+Typically the structure is a limited partnership with a corporate (or LLC)
+general partner.  The General...
+
+
+ Email 6:
+  - Email ID: b4f70acd325f
+  - Best distance: 22.328
+  - Chunks encontrados: 1
+  - Subject: FW: fixed forward or other Collar floor gas price terms
+  - From: phillip.allen@enron.com
+  - To: zimam@enron.com
+  - Date: 2000-10-16T13:44:00+00:00
+  - Body: ---------------------- Forwarded by Phillip K Allen/HOU/ECT on 10/16/2000 01:42 PM --------------------------- "Buckner, Buck" <buck.buckner@honeywell.com> on 10/12/2000 01:12:21 PM To: "'Pallen@Enron.com'" <Pallen@Enron.com> cc: Subject: FW: fixed forward or other Collar floor gas price terms Phillip, > As discussed during our phone conversation, In a Parallon 75 microturbine > power generation deal for a national accounts customer, I am developing a > proposal to sell power to customer at fixed or collar/floor price. To do > so I need a corresponding term gas price for same. Microturbine is an > onsite generation product developed by Honeywell to generate electricity > on customer site (degen). using natural gas. In doing so, I need your > best fixed price forward gas price deal for 1, 3, 5, 7 and 10 years for > annual/seasonal supply to microturbines to generate fixed kWh for > customer. We have the opportunity to sell customer kWh 's using > microturbine or sell them turbines themselves. kWh deal must have limited/ > no risk forward gas price to make deal work. Therein comes Sempra energy > gas trading, truly you. > > We are proposing installing 180 - 240 units across a large number of > stores (60-100) in San Diego. > Store number varies because of installation hurdles face at small percent. > > For 6-8 hours a day Microturbine run time: > Gas requirement for 180 microturbines 227 - 302 MMcf per year > Gas requirement for 240 microturbines 302 - 403 MMcf per year > > Gas will likely be consumed from May through September, during peak > electric period. > Gas price required: Burnertip price behind (LDC) San Diego Gas & Electric > Need detail breakout of commodity and transport cost (firm or > interruptible). > > Should you have additional questions, give me a
+
+
+ Email 7:
+  - Email ID: 06caeaacb060
+  - Best distance: 22.850
+  - Chunks encontrados: 2
+  - Subject: Contact list for mid market
+  - From: phillip.allen@enron.com
+  - To: paul.lucci@enron.com, kenneth.shulklapper@enron.com
+  - Date: 2000-09-12T11:23:00+00:00
+  - Body: ---------------------- Forwarded by Phillip K Allen/HOU/ECT on 09/12/2000 
+11:22 AM ---------------------------
+
+Michael Etringer
+
+09/11/2000 02:32 PM
+
+To: Phillip K Allen/HOU/ECT@ECT
+cc:  
+Subject: Contact list for mid market
+
+Phillip,
+Attached is the list.  Have your people fill in the columns highlighted in 
+yellow.  As best can we will try not to overlap on accounts. 
+
+Thanks, Mike
+
+
+ Email 8:
+  - Email ID: f4e895448763
+  - Best distance: 23.424
+  - Chunks encontrados: 1
+  - Subject: Consolidated positions: Issues & To Do list
+  - From: phillip.allen@enron.com
+  - To: keith.holst@enron.com
+  - Date: 2000-10-09T14:16:00+00:00
+  - Body: gamma grid. Valuation of Gas Daily options. A new position screen for options (months x strike x delta). TBD. Inclusion of positions for exotic options currently managed in spreadsheets. Ability to isolate the position change due to changed deals in the position manager. Ability to view change deal P&L in the TDS deal ticker. Show new deal terms, prior deal terms, and net P&L affect of the change. Eliminate change deals with no economic impact from the TDS deal ticker. Position drill down in the position manager to isolate the impact of individual deals on the position total in a grid cell. Benchmark positions in TDS. Deployment of TDS in Canada. Currency and volume uom conversions. Implicit and explicit position break out issues. -- Allan. PS: Colleen is setting up a meeting tomorrow to discuss the direction for transport. Hopefully we'll know much better where that part stands at that point.
+
+
+ Email 9:
+  - Email ID: 029d45940abf
+  - Best distance: 23.672
+  - Chunks encontrados: 1
+  - Subject: Re: Evaluation for new trading application
+  - From: phillip.allen@enron.com
+  - To: bruce.ferrell@enron.com
+  - Date: 2000-08-25T08:58:00+00:00
+  - Body: No disponible
+

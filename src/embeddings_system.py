@@ -250,31 +250,30 @@ class EmailVectorDB:
         )
         
         processed_results = self._process_search_results(results, query)
-        
         if deduplicate and processed_results['results']:
             processed_results['results'] = self._deduplicate_results(processed_results['results'])[:n_results] 
             processed_results['total'] = len(processed_results['results'])
-        with open("../data/processed/embeddings.txt", 'w', encoding='utf-8') as f:
+        # with open("../data/processed/embeddings.txt", 'w', encoding='utf-8') as f:
             
-            for i, result in enumerate(processed_results['results']):
-                f.write(f"\n Email {i+1}:\n")
-                f.write(f"  - Email ID: {result['email_id']}\n")
-                f.write(f"  - Best distance: {result['best_distance']:.3f}\n")
-                f.write(f"  - Chunks encontrados: {len(result['chunks'])}\n")
-                f.write(f"  - Subject: {result['subject']}\n")
-                f.write(f"  - From: {result['from']}\n")
-                f.write(f"  - To: {result['to']}\n")
-                f.write(f"  - Date: {result['date']}\n")
-                if result['chunks'][0]['chunk_type'] == 'body':
-                    f.write(f"  - Body: {result['chunks'][0]['text']}\n\n")
-                elif result['chunks'][1]['chunk_type'] == 'body':
-                    f.write(f"  - Body: {result['chunks'][0]['text']}\n\n")
-                elif result['chunks'][2]['chunk_type'] == 'body':
-                    f.write(f"  - Body: {result['chunks'][0]['text']}\n\n")
-                else:
-                    f.write(f"  - Body: No disponible\n\n")
+        #     for i, result in enumerate(processed_results['results']):
+        #         f.write(f"\n Email {i+1}:\n")
+        #         f.write(f"  - Email ID: {result['email_id']}\n")
+        #         f.write(f"  - Best distance: {result['best_distance']:.3f}\n")
+        #         f.write(f"  - Chunks encontrados: {len(result['chunks'])}\n")
+        #         f.write(f"  - Subject: {result['subject']}\n")
+        #         f.write(f"  - From: {result['from']}\n")
+        #         f.write(f"  - To: {result['to']}\n")
+        #         f.write(f"  - Date: {result['date']}\n")
+        #         if result['chunks'][0]['chunk_type'] == 'body':
+        #             f.write(f"  - Body: {result['chunks'][0]['text']}\n\n")
+        #         elif len(result["chunks"]) > 1 and result['chunks'][1]['chunk_type'] == 'body':
+        #             f.write(f"  - Body: {result['chunks'][0]['text']}\n\n")
+        #         elif len(result["chunks"]) > 2 and result['chunks'][2]['chunk_type'] == 'body':
+        #             f.write(f"  - Body: {result['chunks'][0]['text']}\n\n")
+        #         else:
+        #             f.write(f"  - Body: No disponible\n\n")
                     
-        print("Resultados guardados en ../data/processed/embeddings.txt")
+        # print("Resultados guardados en ../data/processed/embeddings.txt")
         return processed_results
     def _process_search_results(self, results: Dict, query: str) -> Dict[str, Any]:
 
@@ -352,7 +351,7 @@ class EmailVectorDB:
 
 def test_embeddings_and_db():
     
-    json_path = "../data/processed/enron_sample_1000.json"
+    json_path = "../data/processed/enron_sample_100.json"
     with open(json_path, "r", encoding="utf-8") as f:
         emails_data = json.load(f)
 
@@ -375,7 +374,7 @@ def test_embeddings_and_db():
     print(f"  - Total chunks: {stats['total_chunks']}")
     print(f"  - Distribución: {stats['chunk_distribution']}")
 
-    db.delete_collection()
+    # db.delete_collection()
     
     return db
 
