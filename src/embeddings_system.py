@@ -351,7 +351,7 @@ class EmailVectorDB:
 
 def test_embeddings_and_db():
     
-    json_path = "../data/processed/enron_sample_100.json"
+    json_path = "../data/processed/enron_sample_1000.json"
     with open(json_path, "r", encoding="utf-8") as f:
         emails_data = json.load(f)
 

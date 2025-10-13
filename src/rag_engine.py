@@ -87,8 +87,9 @@ class EmailRAGEngine:
         if self.language == "es":
             system_message = """Eres un asistente experto en búsqueda y análisis de correos electrónicos.
 
-Tu tarea es responder preguntas basándote ÚNICAMENTE en los emails proporcionados como contexto.
-
+Tu tarea es responder preguntas basándote ÚNICAMENTE en los emails proporcionados como contexto, en los emails puedes enontrar información como su id, quien lo manda, quien lo recibe,
+la fecha, el asunto y el cuerpo del email.
+            
 Reglas importantes:
 1. Responde SOLO con información que aparece en los emails proporcionados
 2. SIEMPRE cita la fuente: indica qué EMAIL(s) contiene(n) la información
@@ -193,8 +194,7 @@ Please answer the question based on the above emails. Remember to cite sources."
         
         for idx, email in enumerate(retrieved_emails, 1):
              
-            email_info = f"[EMAIL {idx}]\n"
-            email_info += f"ID: {email['email_id']}\n"
+            email_info = f"[ID: {email['email_id']}\n"
             email_info += f"De: {email['from']}\n"
             email_info += f"Para: {email['to']}\n"
             email_info += f"Asunto: {email['subject']}\n"
@@ -206,12 +206,17 @@ Please answer the question based on the above emails. Remember to cite sources."
             sorted_chunks = sorted(email['chunks'], key=lambda x: x['distance'])
              
             for chunk in sorted_chunks[:2]:   
-                chunk_preview = chunk['text'][:400]   
+                chunk_preview = chunk['text'][:300]   
                 email_info += f"- {chunk_preview}...\n"
             context_parts.append(email_info)
         
         return "\n".join(context_parts)
     
+    def _generate_answer(self, question: str, context: str) -> str:
+            prompt = self._create_prompt(question, context)
+            answer = self.ollama.generate(prompt)        
+            return answer    
+        
     def _prepare_sources(self, results: List[Dict]) -> List[Dict[str, Any]]:
         sources = []
         
@@ -262,11 +267,11 @@ if __name__ == "__main__":
                 try:
                     resp = rag.query(q)
                         
-                    print(f"\nRespuesta (modelo={resp.model_used}) en {resp.processing_time}segundos:\n{resp.answer}\n")
+                    print(f"\nRespuesta (modelo={resp.model_used}) en {resp.processing_time} segundos:\n{resp.answer}\n")
                     if resp.sources:
-                        print("Fuentes:")
+                        print("Fuentes Query:")
                         for idx, s in enumerate(resp.sources):
-                            print(f" -EMAIL {idx + 1}\n      Id:{s.get('email_id')} | Fecha: {s.get('date')}\n      Asunto: {s.get('subject')} ")
+                            print(f" -EMAIL Id: {s.get('email_id')} | Fecha: {s.get('date')}\n      Asunto: {s.get('subject')} ")
                 except Exception as e:
                     print(f"Error procesando la consulta: {e}")
         except KeyboardInterrupt:
