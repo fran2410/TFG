@@ -1,0 +1,126 @@
+{
+    "query": "bike",
+    "results": [
+        {
+            "email_id": "27c2c90d87d6",
+            "from": "phillip.allen@enron.com",
+            "to": "body.shop@enron.com",
+            "subject": "Re: FW: Change in the agroup Cycling Schedule",
+            "date": "2001-02-21T11:05:00+00:00",
+            "chunks": [
+                {
+                    "text": "Subject: Re: FW: Change in the agroup Cycling Schedule\n\nThe spinning bikes are so much better than the life cycles.  Would you \nconsider placing several spi...",
+                    "chunk_type": "summary",
+                    "chunk_index": 0,
+                    "distance": 33.76785659790039
+                },
+                {
+                    "text": "The spinning bikes are so much better than the life cycles.  Would you \nconsider placing several spinning bikes out with the other exercise equipment \nand running a spinning video on the TV's.  I think the equipment would be \nused much more.  Members could just jump on a bike and follow the video any \ntime of day.\n\nLet me know if this is possible.\n\nPhillip Allen\nX37041",
+                    "chunk_type": "body",
+                    "chunk_index": 1,
+                    "distance": 34.85024642944336
+                },
+                {
+                    "text": "Email Subject: Re: FW: Change in the agroup Cycling Schedule",
+                    "chunk_type": "subject",
+                    "chunk_index": 0,
+                    "distance": 38.410369873046875
+                }
+            ],
+            "best_distance": 33.76785659790039
+        },
+        {
+            "email_id": "ab11f957d58d",
+            "from": "phillip.allen@enron.com",
+            "to": "hunter.shively@enron.com",
+            "subject": "Storage of Cycles at the Body Shop",
+            "date": "2000-02-15T12:53:00+00:00",
+            "chunks": [
+                {
+                    "text": "Should I appeal to Skilling.\n\n---------------------- Forwarded by Phillip K Allen/HOU/ECT on 02/15/2000 \n12:52 PM ---------------------------\n\n\nLee Wright@ENRON\n02/15/2000 10:48 AM\nTo: Phillip K Allen/HOU/ECT@ECT\ncc: Amelia Alder/OTS/Enron@ENRON \nSubject: Storage of Cycles at the Body Shop\n\nPhillip -\nI applaud you for using your cycle as daily transportation.  Saves on gas, \npollution and helps keep you strong and healthy.  Enron provides bike racks \nin the front of the building for requests such as this.  Phillip, I wish we \ncould accommodate this request; however, The Body Shop does not have the \ncapacity nor can assume the responsibility for storing cycles on a daily \nbasis.  If you bring a very good lock you should be able to secure the bike \nat the designated outside racks.  \n\nKeep Pedalling - Lee",
+                    "chunk_type": "body",
+                    "chunk_index": 1,
+                    "distance": 34.15803909301758
+                }
+            ],
+            "best_distance": 34.15803909301758
+        },
+        {
+            "email_id": "676f4e381bdf",
+            "from": "phillip.allen@enron.com",
+            "to": "hunter.shively@enron.com",
+            "subject": "Storage of Cycles at the Body Shop",
+            "date": "2000-02-15T12:53:00+00:00",
+            "chunks": [
+                {
+                    "text": "Should I appeal to Skilling.\n\n---------------------- Forwarded by Phillip K Allen/HOU/ECT on 02/15/2000 \n12:52 PM ---------------------------\n\n\nLee Wright@ENRON\n02/15/2000 10:48 AM\nTo: Phillip K Allen/HOU/ECT@ECT\ncc: Amelia Alder/OTS/Enron@ENRON \nSubject: Storage of Cycles at the Body Shop\n\nPhillip -\nI applaud you for using your cycle as daily transportation.  Saves on gas, \npollution and helps keep you strong and healthy.  Enron provides bike racks \nin the front of the building for requests such as this.  Phillip, I wish we \ncould accommodate this request; however, The Body Shop does not have the \ncapacity nor can assume the responsibility for storing cycles on a daily \nbasis.  If you bring a very good lock you should be able to secure the bike \nat the designated outside racks.  \n\nKeep Pedalling - Lee",
+                    "chunk_type": "body",
+                    "chunk_index": 1,
+                    "distance": 34.15803909301758
+                }
+            ],
+            "best_distance": 34.15803909301758
+        },
+        {
+            "email_id": "3083f16a9299",
+            "from": "phillip.allen@enron.com",
+            "to": "muller@thedoghousemail.com",
+            "subject": "Re: (No Subject)",
+            "date": "2000-08-30T15:14:00+00:00",
+            "chunks": [
+                {
+                    "text": "Greg,\n\n Got your message.  Good luck on the bike ride.\n\n What were you doing to your apartment?  Are you setting up a studio?\n\n The kids are back in school.  Otherwise just work is going on here.\n\nKeith",
+                    "chunk_type": "body",
+                    "chunk_index": 1,
+                    "distance": 37.49726486206055
+                },
+                {
+                    "text": "Subject: Re: (No Subject)\n\nGreg,\n\n Got your message.  Good luck on the bike ride.\n\n What were you doing to your apartment?  Are...",
+                    "chunk_type": "summary",
+                    "chunk_index": 0,
+                    "distance": 38.68397903442383
+                }
+            ],
+            "best_distance": 37.49726486206055
+        },
+        {
+            "email_id": "9808aec50a7d",
+            "from": "phillip.allen@enron.com",
+            "to": "muller@thedoghousemail.com",
+            "subject": "Re: (No Subject)",
+            "date": "2000-08-30T15:14:00+00:00",
+            "chunks": [
+                {
+                    "text": "Greg,\n\n Got your message.  Good luck on the bike ride.\n\n What were you doing to your apartment?  Are you setting up a studio?\n\n The kids are back in school.  Otherwise just work is going on here.\n\nKeith",
+                    "chunk_type": "body",
+                    "chunk_index": 1,
+                    "distance": 37.49726486206055
+                },
+                {
+                    "text": "Subject: Re: (No Subject)\n\nGreg,\n\n Got your message.  Good luck on the bike ride.\n\n What were you doing to your apartment?  Are...",
+                    "chunk_type": "summary",
+                    "chunk_index": 0,
+                    "distance": 38.68397903442383
+                }
+            ],
+            "best_distance": 37.49726486206055
+        },
+        {
+            "email_id": "5fd04bca427e",
+            "from": "phillip.allen@enron.com",
+            "to": "frank.ermis@enron.com",
+            "subject": "Enron's December physical fixed price deals as of 11/28/00",
+            "date": "2000-11-29T10:02:00+00:00",
+            "chunks": [
+                {
+                    "text": "---------------------- Forwarded by Phillip K Allen/HOU/ECT on 11/29/2000 \n10:01 AM ---------------------------\n\n\nAnne Bike@ENRON\n11/28/2000 09:04 PM\nTo: pallen70@hotmail.com, prices@intelligencepress.com, lkuch@mh.com\ncc: Darron C Giron/HOU/ECT@ECT, Mike Grigsby/HOU/ECT@ECT, Monique \nSanchez/HOU/ECT@ECT, Phillip K Allen/HOU/ECT@ECT \nSubject: Enron's December physical fixed price deals as of 11/28/00\n\nAttached please find the spreadsheet containing the above referenced \ninformation.",
+                    "chunk_type": "body",
+                    "chunk_index": 1,
+                    "distance": 39.53001403808594
+                }
+            ],
+            "best_distance": 39.53001403808594
+        }
+    ],
+    "total": 6
+}

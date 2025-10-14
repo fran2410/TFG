@@ -166,7 +166,7 @@ class EmailVectorDB:
             ids.append(doc_id)
         
         if email.body:
-            preview = email.body[:500]  
+            preview = email.body[:100]  
             summary = f"Subject: {email.subject}\n\n{preview}..." if email.subject else preview
             
             doc_id = f"{email.id}_summary"
@@ -190,7 +190,7 @@ class EmailVectorDB:
                 metadata = base_metadata.copy()
                 metadata.update({
                     "chunk_type": "body",
-                    "chunk_index": idx,
+                    "chunk_index": idx+1,
                     "chunk_start": start_pos,
                     "chunk_end": end_pos,
                     "total_chunks": len(chunks)
@@ -253,6 +253,9 @@ class EmailVectorDB:
         if deduplicate and processed_results['results']:
             processed_results['results'] = self._deduplicate_results(processed_results['results'])[:n_results] 
             processed_results['total'] = len(processed_results['results'])
+            
+        # with open("../data/processed/chunks.json", 'w', encoding='utf-8') as f:
+        #     json.dump(processed_results, f, ensure_ascii=False, indent=4)
         # with open("../data/processed/embeddings.txt", 'w', encoding='utf-8') as f:
             
         #     for i, result in enumerate(processed_results['results']):
@@ -274,6 +277,7 @@ class EmailVectorDB:
         #             f.write(f"  - Body: No disponible\n\n")
                     
         # print("Resultados guardados en ../data/processed/embeddings.txt")
+        
         return processed_results
     def _process_search_results(self, results: Dict, query: str) -> Dict[str, Any]:
 

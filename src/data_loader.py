@@ -130,7 +130,7 @@ class EnronDataLoader:
             x_cc_addrs = parse_addresses(headers.get("x_cc", ""))
             x_bcc_addrs = parse_addresses(headers.get("x_bcc", ""))
 
-            email_id = hashlib.md5((from_addr + headers.get("subject","") + str(idx)).encode()).hexdigest()[:12]
+            email_id = hashlib.md5((from_addr + headers.get("subject","") + date_iso + str(idx)).encode()).hexdigest()[:12]
 
             email = Email(
                 id=email_id,
