@@ -39,33 +39,57 @@ class OllamaHandler:
         self.temperature = 0.3   
         self.max_tokens = 1000
             
-    def generate(self, prompt: str, context: Optional[str] = None) -> str:
+    def generate(self, prompt: str, context: Optional[str] = None):
         payload = {
             "model": self.model_name,
             "prompt": prompt,
-            "stream": False,
+            "stream": True,   
             "options": {
                 "temperature": self.temperature,
                 "num_predict": self.max_tokens
             }
         }
         
+        full_response = ""
+        
         try:
              
             response = requests.post(
                 f"{self.base_url}/api/generate",
                 json=payload,
-                timeout=self.timeout
+                timeout=self.timeout,
+                stream=True  
             )
+            
             if response.status_code == 200:
-                result = response.json()
-                return result.get('response', '').strip()
+                 
+                for line in response.iter_lines():
+                    if line:
+                         
+                        try:
+                            chunk = json.loads(line.decode('utf-8'))
+                             
+                            response_part = chunk.get('response', '')
+                            full_response += response_part
+                            
+                             
+                             
+                            yield response_part
+                            
+                             
+                            if chunk.get('done'):
+                                break
+                                
+                        except json.JSONDecodeError:
+                             
+                            continue
             else:
-                print(f"Error en Ollama: {response.status_code}")
-                return "Lo siento, no pude generar una respuesta."
+                 
+                raise Exception(f"Error en Ollama: {response.status_code}")
+                
         except Exception as e:
             print(f"Error generando respuesta: {e}")
-            return "Error al generar la respuesta."
+            yield "Error al generar la respuesta."
 
 
 class EmailRAGEngine:
@@ -94,7 +118,7 @@ Reglas importantes:
 1. Responde SOLO con información que aparece en los emails proporcionados
 2. SIEMPRE cita la fuente: indica qué EMAIL(s) contiene(n) la información
 3. Si la información no está en los emails, di claramente "No encontré esta información en los emails proporcionados"
-4. Sé conciso pero completo
+4. Sé muy conciso pero completo
 5. Si múltiples emails tienen información relevante, menciónalos todos
 6. Usa un tono profesional pero amigable
 
@@ -145,11 +169,13 @@ Please answer the question based on the above emails. Remember to cite sources."
 """
         
         return prompt
+    
+    
     def query(self, 
               question: str,
               n_results: int = 5,
-              filters: Optional[Dict] = None) -> RAGResponse:
-
+              filters: Optional[Dict] = None): 
+        
         start_time = datetime.now()         
         search_results = self.vector_db.search(
             query=question,
@@ -157,33 +183,31 @@ Please answer the question based on the above emails. Remember to cite sources."
             filter_metadata=filters
         )
         if not search_results['results']:
-            return RAGResponse(
-                query=question,
-                answer="No encontré emails relevantes para tu pregunta.",
-                sources=[],
-                confidence=0.0,
-                processing_time=(datetime.now() - start_time).total_seconds(),
-                model_used=self.ollama.model_name
-            )
+            yield "No encontré emails relevantes para tu pregunta."
+            yield {"type": "metadata", "sources": [], "model": self.ollama.model_name, "time": (datetime.now() - start_time).total_seconds()}
+            return 
          
          
         relevant_results = search_results['results']
         context = self._build_context(question, relevant_results)
         
          
-        answer = self._generate_answer(question, context)
+        answer_generator = self._generate_answer(question, context)
+        
+        for chunk in answer_generator:
+             yield chunk 
+
          
         sources = self._prepare_sources(relevant_results)
+        time_elapsed_seconds = (datetime.now() - start_time).total_seconds() 
         
-        processing_time = (datetime.now() - start_time).total_seconds()
-        
-        return RAGResponse(
-            query=question,
-            answer=answer,
-            sources=sources,
-            processing_time=processing_time,
-            model_used=self.ollama.model_name
-        )
+         
+        yield {
+            "type": "metadata",
+            "sources": sources,
+            "model": self.ollama.model_name,
+            "time": time_elapsed_seconds
+        }
     
     def _build_context(self, query: str, retrieved_emails: List[Dict]) -> str:
 
@@ -214,8 +238,8 @@ Please answer the question based on the above emails. Remember to cite sources."
     
     def _generate_answer(self, question: str, context: str) -> str:
             prompt = self._create_prompt(question, context)
-            answer = self.ollama.generate(prompt)        
-            return answer    
+            return self.ollama.generate(prompt)        
+               
         
     def _prepare_sources(self, results: List[Dict]) -> List[Dict[str, Any]]:
         sources = []
@@ -255,24 +279,45 @@ if __name__ == "__main__":
         rag = None
 
     if rag is not None:
-        print("\nEscribe tu consulta o 'exit' para salir.")
-        try:
-            while True:
-                q = input("\nPregunta > ").strip()
-                if not q:
-                    continue
-                if q.lower() in ("exit", "quit", "salir"):
-                    break
+            print("\nEscribe tu consulta o 'exit' para salir.")
+            try:
+                while True:
+                    q = input("\nPregunta > ").strip()
+                    if not q:
+                        continue
+                    if q.lower() in ("exit", "quit", "salir"):
+                        break
 
-                try:
-                    resp = rag.query(q)
+                    try:
+                        total_start = datetime.now()
                         
-                    print(f"\nRespuesta (modelo={resp.model_used}) en {resp.processing_time} segundos:\n{resp.answer}\n")
-                    if resp.sources:
-                        print("Fuentes Query:")
-                        for idx, s in enumerate(resp.sources):
-                            print(f" -EMAIL Id: {s.get('email_id')} | Fecha: {s.get('date')}\n      Asunto: {s.get('subject')} ")
-                except Exception as e:
-                    print(f"Error procesando la consulta: {e}")
-        except KeyboardInterrupt:
-            print("\nSaliendo...")
+                        stream_generator = rag.query(q)
+                        
+                        print(f"\nRespuesta (modelo={rag.ollama.model_name}):\n", end="", flush=True)
+
+                        last_element = None
+                        
+                        for item in stream_generator:  
+                            if isinstance(item, str):
+                                print(item, end="", flush=True) 
+                            elif isinstance(item, dict) and item.get("type") == "metadata":
+                                 
+                                last_element = item
+                        
+                        total_end = datetime.now()
+                        
+                        print("\n")
+                        
+                         
+                        if last_element and last_element.get('time'):
+                             print(f"\nRespuesta en {last_element['time']:.2f} segundos.")
+                        
+                        if last_element and last_element.get('sources'):
+                            print("Fuentes Query:")
+                            for idx, s in enumerate(last_element['sources']):
+                                print(f" -EMAIL Id: {s.get('email_id')} | Fecha: {s.get('date')}\n      Asunto: {s.get('subject')} ")
+                    
+                    except Exception as e:
+                        print(f"\nError procesando la consulta: {e}")
+            except KeyboardInterrupt:
+                print("\nSaliendo...")
