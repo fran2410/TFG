@@ -1,0 +1,66 @@
+a1b2c3d4e5f6	¿Quién propuso iniciar la discusión sobre metadatos FAIR en octubre?
+a3b4c5d6e7f8	¿Cuándo es el deadline del reporte anual del proyecto SemanticData?
+b4c5d6e7f8g9	¿Cuándo empieza mi PhD si me aprueban la beca ColFuturo?
+c5d6e7f8g9h0	¿Qué demo envié a ISWC 2024?
+d6e7f8g9h0i1	¿Para qué período apliqué como mentor en el programa ACM?
+e7f8g9h0i1j2	¿Para qué paper solicité el Reproducibility Badge en SIGMOD?
+f8g9h0i1j2k3	¿Qué evento propuse organizar en EKAW 2024 el 26 de noviembre?
+g9h0i1j2k3l4	¿Sobre qué método quiero solicitar una patente?
+h0i1j2k3l4m5	¿Cuándo propuse hacer el kick-off del proyecto MadridKG?
+i1j2k3l4m5n6    ¿En qué fechas organizo el Wikidata Workshop en Madrid?
+j2k3l4m5n6o7	¿Para qué artículo solicité publicar un erratum?
+k3l4m5n6o7p8	¿Cuánto gasté en total en el viaje a ISWC 2024 en Baltimore?
+l4m5n6o7p8q9	¿Qué W3C Community Group propuse crear?
+m5n6o7p8q9r0	¿Para qué período solicité el año sabático en Stanford?
+n6o7p8q9r0s1	¿Qué sesión temática propuse para EGI Conference 2025?
+b2c3d4e5f6g7	¿Qué días propuso Carlos para la reunión de metadatos FAIR?
+c3d4e5f6g7h8	¿Qué aspecto de FAIR le preocupaba a Mark antes de la reunión?
+d4e5f6g7h8i9	¿De dónde traería Tomasz ejemplos para la discusión de FAIR?
+e5f6g7h8i9j0	¿Cuál fue la conclusión de la discusión sobre metadatos FAIR entre Mark y Tomasz de Octubre?
+f6g7h8i9j0k1	¿Cuándo tiene que completar Mark el setup del repositorio?
+g7h8i9j0k1l2	¿Qué clases de schema.org propuso Tomasz para el mapeo de vocabulario?
+h8i9j0k1l2m3	¿Cuánto presupuesto se aprobó para el proyecto FAIR?
+i9j0k1l2m3n4	¿Cuándo es el demo para stakeholders del proyecto FAIR?
+j0k1l2m3n4o5	¿Qué solución de repositorio sugirió el departamento de IT a Mark?
+k1l2m3n4o5p6	¿En qué consorcios participé en Junio de 2024?
+l2m3n4o5p6q7	¿A qué alianzas o consorcios me uní en Junio?
+m3n4o5p6q7r8	¿De qué consorcio fui nombrada miembro del board en Junio?
+n4o5p6q7r8s9	¿En qué fecha accedí a dar un Keynote en el Wikidata workshop?
+o5p6q7r8s9t0	¿Cuándo tengo que entregar el deliverable D3.4 del proyecto DeepGraph?
+p6q7r8s9t0u1	¿Envié el previaje a Budapest a admin-oeg?
+q7r8s9t0u1v2	¿Admin-oeg procesó mi previaje a Budapest o me lo devolvieron?
+r8s9t0u1v2w3	¿Cuál era el deadline del grant proposal HORIZON-KG-2024?
+s9t0u1v2w3x4	¿Qué fecha preferí para el workshop KG4IA en ISWC 2024?
+t0u1v2w3x4y5	¿Cuándo empezaba el contrato de Andrea Moreno como PhD student?
+u1v2w3x4y5z6	¿Cuál era el deadline para el capítulo del libro de Semantic Web Technologies?
+v2w3x4y5z6a7	¿Cuándo programé el mantenimiento del servidor de triple store?
+w3x4y5z6a7b8	¿Qué deadline sugerí para las revisiones del manuscript WS-2024-0234?
+x4y5z6a7b8c9	¿En qué fechas propuse dar el curso de SPARQL avanzado en la Summer School?
+y5z6a7b8c9d0	¿Para cuándo necesito que entreguen el servidor GPU que pedí?
+z6a7b8c9d0e1	¿Cuándo organicé el hackathon de DBpedia en Madrid?
+a7b8c9d0e1f2	¿En qué fecha está programada mi defensa de tesis PhD?
+b8c9d0e1f2g3	¿Cuándo expira nuestra licencia actual de GraphDB Enterprise?
+c9d0e1f2g3h4	¿Cuál es el deadline de submissions para el special issue de Healthcare Knowledge Graphs?
+d0e1f2g3h4i5	¿Qué tutorial propuse para ESWC 2025?
+e1f2g3h4i5j6	¿Cuándo es el kick-off meeting del proyecto con Telefonica?
+f2g3h4i5j6k7	¿Para qué fecha propuse empezar la Marie Curie Fellowship?
+g3h4i5j6k7l8	¿Cuándo compré el laptop Dell XPS para Laura Campos?
+h4i5j6k7l8m9	¿Cuándo llega el visiting researcher Dr. Chen de Tsinghua?
+i5j6k7l8m9n0	¿En qué fecha envié la revisión del manuscript JDSA-2024-156?
+j6k7l8m9n0o1	¿Qué paper nominé para el Best Paper Award de ESWC 2024?
+k7l8m9n0o1p2	¿Cuál es el deadline para aplicar a los Master thesis topics de Spring 2025?
+l8m9n0o1p2q3	¿Cuándo empieza el proyecto KnowEU que coordino?
+m9n0o1p2q3r4	¿Cuándo se incorpora la nueva postdoc Alexandra Ruiz al equipo?
+n0o1p2q3r4s5	¿Para qué fecha necesito el NDA firmado con Repsol?
+o1p2q3r4s5t6	¿Qué duración propuse para el proyecto de colaboración con BBVA?
+p2q3r4s5t6u7	¿Cuándo está programada la publicación del dataset SpainCultureKG?
+q3r4s5t6u7v8	¿En qué semestre propuse dar el curso de Semantic Technologies?
+r4s5t6u7v8w9	¿En qué fecha y hora reporté el intento de acceso no autorizado?
+s5t6u7v8w9x0	¿Cuándo tengo programada mi movilidad Erasmus a Bologna?
+t6u7v8w9x0y1	¿Para cuándo debe estar listo el Lab C-204 para la instalación de equipos?
+u7v8w9x0y1z2	¿En qué fechas es el W3C Workshop en Berlin al que voy a asistir?
+v8w9x0y1z2a3	¿Cuándo tengo que entregar el próximo reporte periódico del proyecto GraphMed?
+w9x0y1z2a3b4	¿A quién nominé como PC member para ISWC 2024?
+x0y1z2a3b4c5	¿Qué libros solicité comprar para la biblioteca del grupo?
+y1z2a3b4c5d6	¿Cuál es el deadline para aplicar a la posición de Research Software Engineer?
+z2a3b4c5d6e7	¿Para cuándo espero tener la aprobación de ética del estudio UserKG?

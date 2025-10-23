@@ -1,3 +1,4 @@
+import time
 import chromadb
 from chromadb.config import Settings
 from sentence_transformers import SentenceTransformer
@@ -8,14 +9,17 @@ from pathlib import Path
 import json
 from tqdm import tqdm
 from data_loader import Email
+import argparse
+import statistics
+import shutil
 
 
 class MultilingualEmbedder:
     
-    def __init__(self, model_name: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"):
+    def __init__(self, model_name: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2", device: str = "cpu"):
 
-        print(f"Modelo: {model_name}")
-        self.model = SentenceTransformer(model_name)
+        print(f"Modelo: {model_name} (device: {device})")
+        self.model = SentenceTransformer(model_name, device=device)
         self.embedding_dim = self.model.get_sentence_embedding_dimension()
     
     def encode(self, texts: List[str], batch_size: int = 32, show_progress: bool = True) -> np.ndarray:
@@ -253,32 +257,9 @@ class EmailVectorDB:
         if deduplicate and processed_results['results']:
             processed_results['results'] = self._deduplicate_results(processed_results['results'])[:n_results] 
             processed_results['total'] = len(processed_results['results'])
-            
-        # with open("../data/processed/chunks.json", 'w', encoding='utf-8') as f:
-        #     json.dump(processed_results, f, ensure_ascii=False, indent=4)
-        # with open("../data/processed/embeddings.txt", 'w', encoding='utf-8') as f:
-            
-        #     for i, result in enumerate(processed_results['results']):
-        #         f.write(f"\n Email {i+1}:\n")
-        #         f.write(f"  - Email ID: {result['email_id']}\n")
-        #         f.write(f"  - Best distance: {result['best_distance']:.3f}\n")
-        #         f.write(f"  - Chunks encontrados: {len(result['chunks'])}\n")
-        #         f.write(f"  - Subject: {result['subject']}\n")
-        #         f.write(f"  - From: {result['from']}\n")
-        #         f.write(f"  - To: {result['to']}\n")
-        #         f.write(f"  - Date: {result['date']}\n")
-        #         if result['chunks'][0]['chunk_type'] == 'body':
-        #             f.write(f"  - Body: {result['chunks'][0]['text']}\n\n")
-        #         elif len(result["chunks"]) > 1 and result['chunks'][1]['chunk_type'] == 'body':
-        #             f.write(f"  - Body: {result['chunks'][0]['text']}\n\n")
-        #         elif len(result["chunks"]) > 2 and result['chunks'][2]['chunk_type'] == 'body':
-        #             f.write(f"  - Body: {result['chunks'][0]['text']}\n\n")
-        #         else:
-        #             f.write(f"  - Body: No disponible\n\n")
-                    
-        # print("Resultados guardados en ../data/processed/embeddings.txt")
         
         return processed_results
+    
     def _process_search_results(self, results: Dict, query: str) -> Dict[str, Any]:
 
         if not results['ids'][0]:
@@ -332,14 +313,34 @@ class EmailVectorDB:
         except Exception as e:
             print(f"Error eliminando colección: {e}")
     
+    def delete_db(self):
+        """Elimina completamente la base de datos"""
+        try:
+            self.client.delete_collection(self.collection.name)
+            print(f"Colección '{self.collection.name}' eliminada")
+        except Exception as e:
+            print(f"Error eliminando colección: {e}")
+        
+        try:
+            if self.db_path.exists():
+                shutil.rmtree(self.db_path)
+                print(f"Base de datos eliminada: {self.db_path}")
+        except Exception as e:
+            print(f"Error eliminando directorio de BD: {e}")
+    
     def get_stats(self) -> Dict[str, Any]:
         count = self.collection.count()
         
         if count > 0:
-            sample = self.collection.get(limit=100, include=["metadatas"])
+            try:
+                sample = self.collection.get(limit=min(count, 2000), include=["metadatas"]) 
+                metas = sample.get('metadatas', [])
+            except Exception:
+                sample = self.collection.get(limit=1000, include=["metadatas"]) 
+                metas = sample.get('metadatas', [])
             
             chunk_types = {}
-            for m in sample['metadatas']:
+            for m in metas:
                 ct = m.get('chunk_type', 'unknown')
                 chunk_types[ct] = chunk_types.get(ct, 0) + 1
         else:
@@ -353,9 +354,249 @@ class EmailVectorDB:
         }
 
 
-def test_embeddings_and_db():
+ 
+
+def load_tests_from_tsv(test_path: str) -> List[Tuple[str, str]]:
+    tests = []
+    with open(test_path, 'r', encoding='utf-8') as f:
+        for raw in f:
+            line = raw.strip()
+            if not line:
+                continue
+            if line.startswith('#'):
+                continue
+             
+            if '\t' in line:
+                expected_id, question = line.split('\t', 1)
+            else:
+                parts = line.split(None, 1)
+                if len(parts) == 2:
+                    expected_id, question = parts
+                else:
+                    continue
+            tests.append((expected_id.strip(), question.strip()))
+    return tests
+
+
+def get_email_ids_in_collection(db: EmailVectorDB) -> set:
+     
+    try:
+        total = db.collection.count()
+        sample = db.collection.get(limit=max(1000, total), include=['metadatas'])
+    except Exception:
+        sample = db.collection.get(limit=1000, include=['metadatas'])
+    metas = sample.get('metadatas', [])
+    ids = {m.get('email_id') for m in metas if m.get('email_id')}
+    return ids
+
+
+def run_retrieval_tester(db: EmailVectorDB, test_file: str, topk: int = 3, n_results: int = 10) -> Dict[str, Any]:
+    tests = load_tests_from_tsv(test_file)
+    if not tests:
+        raise ValueError(f"No tests found in {test_file}")
+
+    present_ids = get_email_ids_in_collection(db)
+
+    results_per_query = []
+    p_at_1 = []
+    mrr_scores = []
+    recall_at_k = []
+    missing_in_db = 0
+
+    for expected_id, question in tqdm(tests, desc="Ejecutando tests"):
+        if expected_id not in present_ids:
+             
+            missing_in_db += 1
+            p_at_1.append(0)
+            mrr_scores.append(0)
+            recall_at_k.append(0)
+            results_per_query.append({
+                'expected': expected_id,
+                'question': question,
+                'found': False,
+                'rank': None,
+                'top_ids': []
+            })
+            continue
+
+        search_res = db.search(question, n_results=n_results, deduplicate=True)
+        predicted_ids = [r['email_id'] for r in search_res.get('results', [])]
+
+        rank = None
+        if expected_id in predicted_ids:
+            rank = predicted_ids.index(expected_id) + 1
+        
+         
+        p1 = 1 if predicted_ids and predicted_ids[0] == expected_id else 0
+        p_at_1.append(p1)
+
+         
+        rr = 1.0 / rank if rank else 0.0
+        mrr_scores.append(rr)
+
+         
+        r_at_k = 1 if expected_id in predicted_ids[:topk] else 0
+        recall_at_k.append(r_at_k)
+
+        results_per_query.append({
+            'expected': expected_id,
+            'question': question,
+            'found': rank is not None,
+            'rank': rank,
+            'top_ids': predicted_ids[:max(topk, 10)]
+        })
+
+    metrics = {
+        'n_queries': len(tests),
+        'n_missing_in_db': missing_in_db,
+        'precision_at_1': statistics.mean(p_at_1) if p_at_1 else 0.0,
+        'mrr': statistics.mean(mrr_scores) if mrr_scores else 0.0,
+        f'recall_at_{topk}': statistics.mean(recall_at_k) if recall_at_k else 0.0,
+    }
+
+    summary = {
+        'metrics': metrics,
+        'per_query': results_per_query
+    }
+
+    return summary
+
+
+def test_multiple_models(json_path: str, test_file: str, topk: int = 3, n_results: int = 10, device: str = "cpu"):
+    import torch
+    import gc
+
+    models_to_test = [
+        "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "sentence-transformers/LaBSE",
+        "intfloat/multilingual-e5-base",
+        "sentence-transformers/all-MiniLM-L6-v2",
+        "sentence-transformers/paraphrase-MiniLM-L6-v2",
+        "sentence-transformers/all-MiniLM-L12-v2",
+        "sentence-transformers/all-mpnet-base-v2"
+    ]
+
+    print(f"\n{'='*80}")
+    print(f"Cargando emails desde {json_path}")
+    print(f"{'='*80}\n")
+
+    with open(json_path, "r", encoding="utf-8") as f:
+        emails_data = json.load(f)
+    emails = [Email(**e) for e in emails_data]
+    print(f"Total emails cargados: {len(emails)}")
+    print(f"Dispositivo: {device.upper()}\n")
+
+    all_results = {}
+
+    for model_name in models_to_test:
+        print(f"\n{'='*80}")
+        print(f"PROBANDO MODELO: {model_name}")
+        print(f"{'='*80}\n")
+
+        db_path = f"../data/test_vectordb_{model_name.replace('/', '_').replace('-', '_')}"
+
+        db = None
+        embedder = None
+        start_time = time.perf_counter()   
+
+        try:
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            gc.collect()
+
+            embedder = MultilingualEmbedder(model_name=model_name, device=device)
+            db = EmailVectorDB(db_path=db_path, embedder=embedder)
+
+            print(f"\nIndexando {len(emails)} emails...")
+            db.index_emails(emails, batch_size=32)
+
+            print(f"\nEjecutando tests desde {test_file}...")
+            summary = run_retrieval_tester(db, test_file, topk=topk, n_results=n_results)
+
+            elapsed_time = time.perf_counter() - start_time   
+
+            all_results[model_name] = summary['metrics']
+            all_results[model_name]['execution_time_sec'] = round(elapsed_time, 2)   
+
+            print(f"\n--- Resultados para {model_name} ---")
+            m = summary['metrics']
+            print(f"Tiempo total: {elapsed_time:.2f} s")
+            print(f"Queries: {m['n_queries']}")
+            print(f"Missing expected IDs in DB: {m['n_missing_in_db']}")
+            print(f"Precision@1: {m['precision_at_1']:.3f}")
+            print(f"MRR: {m['mrr']:.3f}")
+            print(f"Recall@{topk}: {m[f'recall_at_{topk}']:.3f}")
+
+        except Exception as e:
+            elapsed_time = time.perf_counter() - start_time
+            all_results[model_name] = {
+                'error': str(e),
+                'execution_time_sec': round(elapsed_time, 2),
+                'precision_at_1': 0.0,
+                'mrr': 0.0,
+                f'recall_at_{topk}': 0.0
+            }
+            print(f"\n❌ Error con modelo {model_name}: {e}")
+            print(f"Tiempo antes del fallo: {elapsed_time:.2f} s")
+
+        finally:
+            try:
+                print(f"\nLimpiando base de datos temporal...")
+                if db is not None:
+                    db.delete_db()
+            except Exception as e:
+                print(f"Error al limpiar BD: {e}")
+
+            del embedder
+            del db
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            gc.collect()
     
-    json_path = "../data/processed/enron_sample_1000.json"
+     
+    print(f"\n{'='*80}")
+    print("RESUMEN COMPARATIVO DE TODOS LOS MODELOS")
+    print(f"{'='*80}\n")
+    
+    print(f"{'Modelo':<50} {'P@1':<8} {'MRR':<8} {'R@{topk}':<8}")
+    print(f"{'-'*80}")
+    
+    for model_name, metrics in all_results.items():
+        if 'error' not in metrics:
+            print(f"{model_name:<50} {metrics['precision_at_1']:<8.3f} {metrics['mrr']:<8.3f} {metrics[f'recall_at_{topk}']:<8.3f}")
+        else:
+            print(f"{model_name:<50} ERROR")
+    
+     
+    valid_results = {k: v for k, v in all_results.items() if 'error' not in v}
+    
+    if valid_results:
+        best_model_mrr = max(valid_results.items(), 
+                             key=lambda x: x[1].get('mrr', 0))
+        best_model_p1 = max(valid_results.items(), 
+                            key=lambda x: x[1].get('precision_at_1', 0))
+        
+        print(f"\n{'='*80}")
+        print(f"🏆 Mejor modelo por MRR: {best_model_mrr[0]} (MRR: {best_model_mrr[1].get('mrr', 0):.3f})")
+        print(f"🏆 Mejor modelo por P@1: {best_model_p1[0]} (P@1: {best_model_p1[1].get('precision_at_1', 0):.3f})")
+        print(f"{'='*80}\n")
+    else:
+        print("\n⚠️  Ningún modelo se ejecutó correctamente\n")
+    
+     
+    output_file = "../data/processed/model_comparison_results.json"
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(all_results, f, ensure_ascii=False, indent=4)
+    print(f"Resultados guardados en: {output_file}")
+    
+    return all_results
+
+
+ 
+
+
+def test_embeddings_and_db():
+    json_path = "../data/processed/enron_sample_1000+60.json"
     with open(json_path, "r", encoding="utf-8") as f:
         emails_data = json.load(f)
 
@@ -384,4 +625,37 @@ def test_embeddings_and_db():
 
 
 if __name__ == "__main__":
-    test_embeddings_and_db()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--run-tester', action='store_true', help='Ejecutar el tester de recuperación usando test_preguntas.txt')
+    parser.add_argument('--test-models', action='store_true', help='Probar múltiples modelos de embeddings')
+    parser.add_argument('--test-file', type=str, default='test_preguntas.txt', help='Ruta del archivo de tests (id \t pregunta)')
+    parser.add_argument('--json-path', type=str, default='../data/processed/enron_sample_1000+60.json', help='Ruta al archivo JSON con emails')
+    parser.add_argument('--topk', type=int, default=3, help='Valor K para recall@K')
+    parser.add_argument('--n-results', type=int, default=10, help='Número de resultados a recuperar por consulta')
+    parser.add_argument('--db-path', type=str, default='../data/test_vectordb', help='Ruta al vectordb de Chroma')
+    parser.add_argument('--device', type=str, default='cpu', choices=['cpu', 'cuda'], help='Dispositivo para los modelos (cpu/cuda)')
+    args = parser.parse_args()
+
+    if args.test_models:
+        test_multiple_models(
+            json_path=args.json_path,
+            test_file=args.test_file,
+            topk=args.topk,
+            n_results=args.n_results,
+            device=args.device
+        )
+    elif args.run_tester:
+        db = EmailVectorDB(db_path=args.db_path)
+        summary = run_retrieval_tester(db, args.test_file, topk=args.topk, n_results=args.n_results)
+
+        print('\n--- Tester summary ---')
+        m = summary['metrics']
+        print(f"Queries: {m['n_queries']}")
+        print(f"Missing expected IDs in DB: {m['n_missing_in_db']}")
+        print(f"Precision@1: {m['precision_at_1']:.3f}")
+        print(f"MRR: {m['mrr']:.3f}")
+        print(f"Recall@{args.topk}: {m[f'recall_at_{args.topk}']:.3f}")
+
+    else:
+         
+        test_embeddings_and_db()

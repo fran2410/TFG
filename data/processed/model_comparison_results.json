@@ -1,0 +1,58 @@
+{
+    "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2": {
+        "n_queries": 66,
+        "n_missing_in_db": 0,
+        "precision_at_1": 0.7424242424242424,
+        "mrr": 0.7693602693602694,
+        "recall_at_3": 0.803030303030303,
+        "execution_time_sec": 65.83
+    },
+    "sentence-transformers/LaBSE": {
+        "n_queries": 66,
+        "n_missing_in_db": 0,
+        "precision_at_1": 0.7878787878787878,
+        "mrr": 0.8207070707070707,
+        "recall_at_3": 0.8636363636363636,
+        "execution_time_sec": 342.56
+    },
+    "intfloat/multilingual-e5-base": {
+        "n_queries": 66,
+        "n_missing_in_db": 0,
+        "precision_at_1": 0.8787878787878788,
+        "mrr": 0.898989898989899,
+        "recall_at_3": 0.9242424242424242,
+        "execution_time_sec": 407.85
+    },
+    "sentence-transformers/all-MiniLM-L6-v2": {
+        "n_queries": 66,
+        "n_missing_in_db": 0,
+        "precision_at_1": 0.5909090909090909,
+        "mrr": 0.67739898989899,
+        "recall_at_3": 0.7424242424242424,
+        "execution_time_sec": 62.62
+    },
+    "sentence-transformers/paraphrase-MiniLM-L6-v2": {
+        "n_queries": 66,
+        "n_missing_in_db": 0,
+        "precision_at_1": 0.5151515151515151,
+        "mrr": 0.5988395863395863,
+        "recall_at_3": 0.6666666666666666,
+        "execution_time_sec": 47.16
+    },
+    "sentence-transformers/all-MiniLM-L12-v2": {
+        "n_queries": 66,
+        "n_missing_in_db": 0,
+        "precision_at_1": 0.7121212121212122,
+        "mrr": 0.7467532467532467,
+        "recall_at_3": 0.7575757575757576,
+        "execution_time_sec": 77.19
+    },
+    "sentence-transformers/all-mpnet-base-v2": {
+        "n_queries": 66,
+        "n_missing_in_db": 0,
+        "precision_at_1": 0.6060606060606061,
+        "mrr": 0.681962481962482,
+        "recall_at_3": 0.7424242424242424,
+        "execution_time_sec": 502.37
+    }
+}
