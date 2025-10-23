@@ -156,52 +156,58 @@ class EmailVectorDB:
             "x_origin": email.x_origin or "",
             "x_filename": email.x_filename or "",
         }
-        
-        if email.subject:
-            doc_id = f"{email.id}_subject"
-            documents.append(f"Email Subject: {email.subject}")
-            
+
+        subject = email.subject or ""
+        body = email.body or ""
+
+        # Si no hay body pero sí subject: indexamos un único chunk con solo el asunto.
+        if not body and subject:
+            doc_id = f"{email.id}_chunk_0"
+            doc_text = f"Subject: {subject}"
+            documents.append(doc_text)
+
             metadata = base_metadata.copy()
             metadata.update({
-                "chunk_type": "subject",
-                "chunk_index": 0
+                "chunk_type": "subject_body",   # ahora todos los chunks usan este tipo
+                "chunk_index": 0,
+                "chunk_start": 0,
+                "chunk_end": 0,
+                "total_chunks": 1
             })
             metadatas.append(metadata)
             ids.append(doc_id)
-        
-        if email.body:
-            preview = email.body[:100]  
-            summary = f"Subject: {email.subject}\n\n{preview}..." if email.subject else preview
-            
-            doc_id = f"{email.id}_summary"
-            documents.append(summary)
-            
+            return documents, metadatas, ids
+
+        # Si tampoco hay subject ni body: no hacemos nada.
+        if not body and not subject:
+            return documents, metadatas, ids
+
+        # Si hay body (sea corto o largo), lo dividimos en chunks de palabras
+        chunks = self.chunk_text(body, self.chunk_size, self.chunk_overlap)
+        total_chunks = len(chunks) if chunks else 1
+
+        for idx, (chunk_text, start_pos, end_pos) in enumerate(chunks):
+            # Cada chunk siempre comienza con el asunto (aunque esté vacío)
+            if subject:
+                doc_text = f"Subject: {subject}\n\n{chunk_text}"
+            else:
+                # Si no hay asunto, solo ponemos el trozo de body
+                doc_text = chunk_text
+
+            doc_id = f"{email.id}_chunk_{idx}"
+            documents.append(doc_text)
+
             metadata = base_metadata.copy()
             metadata.update({
-                "chunk_type": "summary",
-                "chunk_index": 0
+                "chunk_type": "subject_body",   # único tipo de chunk ahora
+                "chunk_index": idx,
+                "chunk_start": start_pos,       # posiciones dentro del body original
+                "chunk_end": end_pos,
+                "total_chunks": total_chunks
             })
             metadatas.append(metadata)
             ids.append(doc_id)
-        
-        if email.body: 
-            chunks = self.chunk_text(email.body, self.chunk_size, self.chunk_overlap)
-            
-            for idx, (chunk_text, start_pos, end_pos) in enumerate(chunks):
-                doc_id = f"{email.id}_body_{idx}"
-                documents.append(chunk_text)
-                
-                metadata = base_metadata.copy()
-                metadata.update({
-                    "chunk_type": "body",
-                    "chunk_index": idx+1,
-                    "chunk_start": start_pos,
-                    "chunk_end": end_pos,
-                    "total_chunks": len(chunks)
-                })
-                metadatas.append(metadata)
-                ids.append(doc_id)
-        
+
         return documents, metadatas, ids
         
     def _is_duplicate_content(self, email_result: Dict) -> bool:
